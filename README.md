@@ -1,8 +1,56 @@
-# Cloudsmith Terraform Assessment Documentation
+# Cloudsmith Terraform Assessment
 
-## Overview
+## Objectives
 
-This documentation serves as a reference guide for users working with the Cloudsmith Terraform Assessment project. It explains how to use Terraform state files to manage and provision Cloudsmith infrastructure resources.
+This assessment demonstrates your understanding of Terraform state files and Cloudsmith repository management.
+
+## Instructions
+
+### 1. Repository Setup
+
+- **Create 3 repositories:**  
+    - `QA`  
+    - `Staging`  
+    - `Production`
+
+- **Add upstreams:**  
+    - `QA`: NPM and Maven  
+    - `Staging`: Python  
+    - `Production`: None
+
+### 2. Team Management
+
+- **Create 3 teams:**  
+    - `Dev`  
+    - `DevOps`  
+    - `Admin`
+
+- **Assign privileges:**  
+    - `QA` & `Staging`: Write access for all teams  
+    - `Production`:  
+        - Admin: Write  
+        - DevOps: Read  
+        - Dev: No access
+
+### 3. Security & Policies
+
+- **Geo/IP Rule:**  
+    - Block all traffic from Russia
+
+- **Production Repository Settings:**  
+    - Enable "replace packages" by default
+
+- **Service Account:**  
+    - Create a service account with the same permissions as the DevOps team
+
+- **Vulnerability Policy:**  
+    - Block any NPM packages with a critical security scan result
+
+# what a terraform state file is/does
+
+A Terraform state file is a JSON file that Terraform uses to keep track of the resources it manages. It contains information about the current state of the infrastructure, including the resources that have been created, their attributes, and their relationships. The state file allows Terraform to determine what changes need to be made to the infrastructure when you run `terraform apply`, and it helps ensure that your infrastructure remains consistent with your configuration files.
+
+The state file is typically stored locally on your machine, but it can also be stored remotely (e.g., in an S3 bucket) for collaboration purposes. It is important to manage the state file carefully, as it contains sensitive information and can be a single point of failure if not handled properly.
 
 ## Prerequisites
 
@@ -10,15 +58,30 @@ This documentation serves as a reference guide for users working with the Clouds
 - Understanding of Terraform state file concepts
 - Access to Cloudsmith credentials/API tokens
 
-## Quick Start
+## Steps to create the resouces using Terraform:
 
-Before creating Cloudsmith objects, ensure you understand the state management workflow:
+1. **Create a terraform.tfvars file**: This file will contain your Cloudsmith API key and organization name as shown below:
+```hcl
+cloudsmith_api_key = "your_actual_api_key_here"
+organization       = "your_actual_organization_name_here"
+```
+Make sure to replace the placeholders with your actual API key and organization name.
 
-1. Run `terraform init` to initialize the working directory
-2. Review configuration files in the project folder
-3. Use `terraform plan` to preview changes
-4. Execute `terraform apply` to create resources
-5. Verify state file updates reflect your infrastructure
+2. **Initialize Terraform**: Run `terraform init` to set up the working directory and download necessary providers.
+3. **Plan the Deployment**: Use `terraform plan` to see the changes that will be made to your infrastructure based on the configuration files.
+4. **Apply the Configuration**: Execute `terraform apply` to create the resources defined in your Terraform configuration files. Review the proposed changes and confirm to proceed with the deployment.
+5. ** Verify the Resources**: After applying, check the Cloudsmith dashboard to ensure that the repositories, teams, permissions, and policies have been created as specified in the instructions.
+
+## Reviewer Notes
+
+- Verify that all repositories, teams, and permissions are correctly configured.
+- Check that the Geo/IP rule and vulnerability policy are active.
+- Confirm the service account permissions match the DevOps team.
+- Ensure the production repository allows package replacement by default.
+
+## Conclusion
+
+This assessment tests your ability to manage Cloudsmith repositories and teams using Terraform, as well as your understanding of security policies and service accounts. Make sure to follow the instructions carefully and verify that all configurations are correctly applied.
 
 ## Key Commands for Cloudsmith Resources
 
@@ -31,29 +94,3 @@ Before creating Cloudsmith objects, ensure you understand the state management w
 - Store state files securely (use remote backends for team collaboration)
 - Never commit sensitive state files to version control
 - Regular backups are essential for disaster recovery
-
-## Additional Resources
-
-- Review the configuration files in the `cloudsmith-terraform-assessment` folder for specific resource examples
-- Consult Cloudsmith provider documentation for available resource types
-- Use `terraform validate` to check configuration syntax
-
-For detailed information on Terraform state files, refer to the included README sections on state file concepts and management best practices.
-
-# what a terraform state file is/does
-
-A Terraform state file is a JSON file that Terraform uses to keep track of the resources it manages. It contains information about the current state of the infrastructure, including the resources that have been created, their attributes, and their relationships. The state file allows Terraform to determine what changes need to be made to the infrastructure when you run `terraform apply`, and it helps ensure that your infrastructure remains consistent with your configuration files.
-
-The state file is typically stored locally on your machine, but it can also be stored remotely (e.g., in an S3 bucket) for collaboration purposes. It is important to manage the state file carefully, as it contains sensitive information and can be a single point of failure if not handled properly.
-
-# how to use terraform state file to manage infrastructure
-
-To use a Terraform state file to manage infrastructure, you typically follow these steps:
-
-1. Initialize your Terraform configuration using `terraform init`. This will set up the necessary backend for storing the state file.
-2. Create your Terraform configuration files (e.g., `main.tf`) that define the desired infrastructure.
-3. Run `terraform plan` to see the changes that will be made to your infrastructure based on the current state and your configuration files.
-4. If the plan looks good, run `terraform apply` to apply the changes to your infrastructure. Terraform will update the state file to reflect the new state of the infrastructure after the changes are applied.
-5. You can also use `terraform state` commands to inspect and manipulate the state file directly, such as `terraform state list` to see all the resources in the state file or `terraform state show <resource>` to see the details of a specific resource.
-6. If you are collaborating with others, you can use a remote backend to store the state file, which allows multiple team members to work on the same infrastructure without conflicts. You can configure the remote backend in your Terraform configuration files, and Terraform will handle the state file management for you.
-7. It is important to regularly back up your state file and to use version control for your Terraform configuration files to ensure that you can recover from any issues that may arise with the state file.

@@ -4,7 +4,7 @@
 
 This assessment demonstrates your understanding of Terraform state files and Cloudsmith repository management.
 
-## Instructions
+## Tasks
 
 ### 1. Repository Setup
 
